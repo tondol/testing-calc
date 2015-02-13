@@ -1,0 +1,80 @@
+doctype html
+html(lang='ja')
+  head
+    title testing-calc
+    meta(charset='utf-8')
+    script(src='../bower_components/jquery/dist/jquery.min.js')
+    link(rel='stylesheet', href='../bower_components/bootstrap-css/css/bootstrap.min.css')
+    style.
+      table input {
+        height: 50px !important;
+        font-size: 150%;
+        background: #ffffff !important }
+      .btn-calc-11 {
+        width: 100% !important;
+        height: 50px !important;
+        font-size: 150% }
+      .btn-calc-21 {
+        width: 100% !important;
+        height: 108px !important;
+        font-size: 150% }
+      .btn-calc-12 {
+        width: 100% !important;
+        height: 50px !important;
+        font-size: 150% }
+      .borderless td {
+        padding: 4px !important;
+        border: none !important }
+      .fixed {
+        table-layout: fixed }
+  body
+    .container
+      h1 testing-calc
+      p You can try this by pressing physical keys or graphical buttons.
+      form
+        table.table.borderless.fixed
+          tr
+            td(colspan='4')
+              input.form-control(type='text', readonly='readonly')
+          tr
+            td
+              button#btn-clear.btn.btn-danger.btn-calc-11 C
+            td
+              button#btn-invert.btn.btn-success.btn-calc-11 +/-
+            td
+              button#btn-divide.btn.btn-success.btn-calc-11 /
+            td
+              button#btn-multiply.btn.btn-success.btn-calc-11 *
+          tr
+            td
+              button#btn-7.btn.btn-default.btn-calc-11 7
+            td
+              button#btn-8.btn.btn-default.btn-calc-11 8
+            td
+              button#btn-9.btn.btn-default.btn-calc-11 9
+            td
+              button#btn-minus.btn.btn-success.btn-calc-11 -
+          tr
+            td
+              button#btn-4.btn.btn-default.btn-calc-11 4
+            td
+              button#btn-5.btn.btn-default.btn-calc-11 5
+            td
+              button#btn-6.btn.btn-default.btn-calc-11 6
+            td
+              button#btn-plus.btn.btn-success.btn-calc-11 +
+          tr
+            td
+              button#btn-1.btn.btn-default.btn-calc-11 1
+            td
+              button#btn-2.btn.btn-default.btn-calc-11 2
+            td
+              button#btn-3.btn.btn-default.btn-calc-11 3
+            td(rowspan='2')
+              button#btn-equal.btn.btn-primary.btn-calc-21 =
+          tr
+            td(colspan='2')
+              button#btn-0.btn.btn-default.btn-calc-12 0
+            td
+              button#btn-dot.btn.btn-default.btn-calc-11 .
+      script(src='index.js')

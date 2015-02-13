@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>testing-calc</title>
+    <meta charset="utf-8">
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/bootstrap-css/css/bootstrap.min.css">
+    <style>
+      table input {
+        height: 50px !important;
+        font-size: 150%;
+        background: #ffffff !important }
+      .btn-calc-11 {
+        width: 100% !important;
+        height: 50px !important;
+        font-size: 150% }
+      .btn-calc-21 {
+        width: 100% !important;
+        height: 108px !important;
+        font-size: 150% }
+      .btn-calc-12 {
+        width: 100% !important;
+        height: 50px !important;
+        font-size: 150% }
+      .borderless td {
+        padding: 4px !important;
+        border: none !important }
+      .fixed {
+        table-layout: fixed }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>testing-calc</h1>
+      <p>You can try this by pressing physical keys or graphical buttons.</p>
+      <form>
+        <table class="table borderless fixed">
+          <tr>
+            <td colspan="4">
+              <input type="text" readonly="readonly" class="form-control">
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button id="btn-clear" class="btn btn-danger btn-calc-11">C</button>
+            </td>
+            <td>
+              <button id="btn-invert" class="btn btn-success btn-calc-11">+/-</button>
+            </td>
+            <td>
+              <button id="btn-divide" class="btn btn-success btn-calc-11">/</button>
+            </td>
+            <td>
+              <button id="btn-multiply" class="btn btn-success btn-calc-11">*</button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button id="btn-7" class="btn btn-default btn-calc-11">7</button>
+            </td>
+            <td>
+              <button id="btn-8" class="btn btn-default btn-calc-11">8</button>
+            </td>
+            <td>
+              <button id="btn-9" class="btn btn-default btn-calc-11">9</button>
+            </td>
+            <td>
+              <button id="btn-minus" class="btn btn-success btn-calc-11">-</button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button id="btn-4" class="btn btn-default btn-calc-11">4</button>
+            </td>
+            <td>
+              <button id="btn-5" class="btn btn-default btn-calc-11">5</button>
+            </td>
+            <td>
+              <button id="btn-6" class="btn btn-default btn-calc-11">6</button>
+            </td>
+            <td>
+              <button id="btn-plus" class="btn btn-success btn-calc-11">+</button>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button id="btn-1" class="btn btn-default btn-calc-11">1</button>
+            </td>
+            <td>
+              <button id="btn-2" class="btn btn-default btn-calc-11">2</button>
+            </td>
+            <td>
+              <button id="btn-3" class="btn btn-default btn-calc-11">3</button>
+            </td>
+            <td rowspan="2">
+              <button id="btn-equal" class="btn btn-primary btn-calc-21">=</button>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <button id="btn-0" class="btn btn-default btn-calc-12">0</button>
+            </td>
+            <td>
+              <button id="btn-dot" class="btn btn-default btn-calc-11">.</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+      <script src="index.js"></script>
+    </div>
+  </body>
+</html>
