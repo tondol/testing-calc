@@ -1,14 +1,23 @@
 /// <reference path="jquery.d.ts" />
 
-enum Operator { Default, Plus, Minus, Multiply, Divide }
-enum State { Init, FirstOperand, SecondOperand, Result }
+declare function require(x:string):any
+declare class Rational {
+  public add(r:Rational):Rational
+  public sub(r:Rational):Rational
+  public mul(r:Rational):Rational
+  public div(r:Rational):Rational
+  public toString():string
+  public val():number
+}
+var r = require('rationals')
+
+enum Operator { Plus, Minus, Multiply, Divide }
+enum State { Init, Process, Result }
 
 class Calc {
-  operator:Operator
-  firstOperand:number
-  secondOperand:number
-  state:State
   selector:JQuery
+  expression:string
+  state:State
 
   constructor(selector:JQuery){
     this.selector = selector
@@ -16,74 +25,92 @@ class Calc {
     this.apply()
   }
   public clear(){
-    this.operator = Operator.Default
-    this.firstOperand = 0
-    this.secondOperand = 0
+    this.expression = ''
     this.state = State.Init
     this.apply()
   }
   public equal(){
-    if (this.state == State.SecondOperand) {
-      this.firstOperand = this.calc()
-      this.state = State.Result
-    }
+    this.expression = this.eval().toString().replace(/\/1$/, '')
+
+    this.state = State.Result
     this.apply()
   }
-  public putOperator(operator:Operator) {
-    if (this.state == State.Init) {
-    } else if (this.state == State.FirstOperand || this.state == State.Result) {
-      this.operator = operator
-      this.secondOperand = 0
-      this.state = State.SecondOperand
-    } else if (this.state == State.SecondOperand) {
-      this.firstOperand = this.calc()
-      this.operator = operator
-      this.secondOperand = 0
-    }
-    this.apply()
-  }
-  public invert(){
-    if (this.state == State.FirstOperand) {
-      this.firstOperand *= -1
-    } else if (this.state == State.SecondOperand) {
-      this.secondOperand *= -1
-    }
+  public putOperator(operator:string) {
+    this.expression += operator
+    this.state = State.Process
     this.apply()
   }
   public putDigit(d:number){
-    console.log(d)
-    if (this.state == State.Init || this.state == State.Result) {
-      this.firstOperand = d
-      this.state = State.FirstOperand
-    } else if (this.state == State.FirstOperand) {
-      this.firstOperand = this.firstOperand * 10 + d
-    } else if (this.state == State.SecondOperand) {
-      this.secondOperand = this.secondOperand * 10 + d
+    if (this.state == State.Result) {
+      this.expression = ''
     }
+    this.expression += d.toString()
+    this.state = State.Process
     this.apply()
   }
-  private calc() {
-    if (this.operator == Operator.Plus) return this.firstOperand + this.secondOperand
-    else if (this.operator == Operator.Minus) return this.firstOperand - this.secondOperand
-    else if (this.operator == Operator.Multiply) return this.firstOperand * this.secondOperand
-    else if (this.operator == Operator.Divide) return this.firstOperand / this.secondOperand
-  }
   private apply(){
-    var op = ''
-    if (this.operator == Operator.Plus) op = '+'
-    else if (this.operator == Operator.Minus) op = '-'
-    else if (this.operator == Operator.Multiply) op = '*'
-    else if (this.operator == Operator.Divide) op = '/'
+    this.selector.val(this.expression)
+  }
 
-    if (this.state == State.Init) {
-      this.selector.val('(I)')
-    } else if (this.state == State.FirstOperand) {
-      this.selector.val(this.firstOperand + ' (F)')
-    } else if (this.state == State.SecondOperand) {
-      this.selector.val(this.firstOperand + ' ' + op + ' ' + this.secondOperand + ' (S)')
-    } else {
-      this.selector.val(this.firstOperand + ' (R)')
+  private isDigit(e:string, i:number){
+    return e.charCodeAt(i) >= '0'.charCodeAt(0) &&
+        e.charCodeAt(i) <= '9'.charCodeAt(0)
+  }
+  private toDigit(e:string, i:number){
+    return e.charCodeAt(i) - '0'.charCodeAt(0)
+  }
+  private evalNumber(e:string, i:number):[Rational, number]{
+    var n = 0
+    while (this.isDigit(e, i)) {
+      n = n * 10 + this.toDigit(e, i)
+      i++
     }
+    return [r(n), i]
+  }
+  private evalTerm(e:string, i:number):[Rational, number]{
+    if (e.charAt(i) == '(') {
+      var tuple = this.evalExpression(e, i + 1)
+      tuple[1]++
+      return tuple
+    } else {
+      return this.evalNumber(e, i)
+    }
+  }
+  private evalFactor(e:string, i:number):[Rational, number]{
+    var left = this.evalTerm(e, i)
+    while (e.charAt(left[1]) == '*' ||
+        e.charAt(left[1]) == '/') {
+      if (e.charAt(left[1]) == '*') {
+        var right = this.evalTerm(e, left[1] + 1)
+        left[0] = left[0].mul(right[0])
+        left[1] = right[1]
+      } else {
+        var right = this.evalTerm(e, left[1] + 1)
+        left[0] = left[0].div(right[0])
+        left[1] = right[1]
+      }
+    }
+    return left
+  }
+  private evalExpression(e:string, i:number):[Rational, number]{
+    var left = this.evalFactor(e, i)
+    while (e.charAt(left[1]) == '+' ||
+        e.charAt(left[1]) == '-') {
+      if (e.charAt(left[1]) == '+') {
+        var right = this.evalFactor(e, left[1] + 1)
+        left[0] = left[0].add(right[0])
+        left[1] = right[1]
+      } else {
+        var right = this.evalFactor(e, left[1] + 1)
+        left[0] = left[0].sub(right[0])
+        left[1] = right[1]
+      }
+    }
+    return left
+  }
+  private eval():Rational{
+    var tuple = this.evalExpression(this.expression, 0)
+    return tuple[0]
   }
 }
 
@@ -100,32 +127,36 @@ $(()=>{
   $('#btn-7').click(()=>{ calc.putDigit(7); return false })
   $('#btn-8').click(()=>{ calc.putDigit(8); return false })
   $('#btn-9').click(()=>{ calc.putDigit(9); return false })
-  $('#btn-plus').click(()=>{ calc.putOperator(Operator.Plus); return false })
-  $('#btn-minus').click(()=>{ calc.putOperator(Operator.Minus); return false })
-  $('#btn-multiply').click(()=>{ calc.putOperator(Operator.Multiply); return false })
-  $('#btn-divide').click(()=>{ calc.putOperator(Operator.Divide); return false })
-  $('#btn-invert').click(()=>{ calc.invert(); return false })
+  $('#btn-plus').click(()=>{ calc.putOperator('+'); return false })
+  $('#btn-minus').click(()=>{ calc.putOperator('-'); return false })
+  $('#btn-multiply').click(()=>{ calc.putOperator('*'); return false })
+  $('#btn-divide').click(()=>{ calc.putOperator('/'); return false })
   $('#btn-equal').click(()=>{ calc.equal(); return false })
   $('#btn-clear').click(()=>{ calc.clear(); return false })
-  $('#btn-dot').click(()=>{ calc.dot(); return false })
+  $('#btn-left').click(()=>{ calc.putOperator('('); return false })
+  $('#btn-right').click(()=>{ calc.putOperator(')'); return false })
 
-  $(document).keydown((e)=>{
-    var keyCode = e.keyCode
-    if (keyCode >= 48 && keyCode <= 57) {
-      calc.putDigit(keyCode - 48)
-    } else if (keyCode == 187) {
-      if (e.shiftKey) calc.putOperator(Operator.Plus)
-      else calc.equal()
-    } else if (keyCode == 189) {
-      calc.putOperator(Operator.Minus)
-    } else if (keyCode == 222) {
-      calc.putOperator(Operator.Multiply)
-    } else if (keyCode == 191) {
-      calc.putOperator(Operator.Divide)
-    } else if (keyCode == 13) {
-      calc.equal()
-    } else if (keyCode == 8) {
-      calc.clear()
+  $(document).keypress((e)=>{
+    switch (e.keyCode) {
+      case 48: case 49: case 50: case 51: case 52:
+      case 53: case 54: case 55: case 56: case 57:
+        calc.putDigit(e.keyCode - 48); break
+      case 43:
+        calc.putOperator('+'); break
+      case 45:
+        calc.putOperator('-'); break
+      case 42:
+        calc.putOperator('*'); break
+      case 47:
+        calc.putOperator('/'); break
+      case 13: case 61:
+        calc.equal(); break
+      case 40:
+        calc.putOperator('('); break
+      case 41:
+        calc.putOperator(')'); break
     }
   })
+
+  $('#btn-equal').focus()
 })
