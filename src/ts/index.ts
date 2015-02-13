@@ -52,6 +52,7 @@ class Calc {
     this.selector.val(this.expression)
   }
 
+  // 再帰降下法
   private isDigit(e:string, i:number){
     return e.charCodeAt(i) >= '0'.charCodeAt(0) &&
         e.charCodeAt(i) <= '9'.charCodeAt(0)
@@ -132,7 +133,11 @@ $(()=>{
   $('#btn-multiply').click(()=>{ calc.putOperator('*'); return false })
   $('#btn-divide').click(()=>{ calc.putOperator('/'); return false })
   $('#btn-equal').click(()=>{ calc.equal(); return false })
-  $('#btn-clear').click(()=>{ calc.clear(); return false })
+  $('#btn-clear').click(()=>{
+    calc.clear();
+    $('#btn-equal').focus() // フォーカスを戻しておく
+    return false
+  })
   $('#btn-left').click(()=>{ calc.putOperator('('); return false })
   $('#btn-right').click(()=>{ calc.putOperator(')'); return false })
 
