@@ -6,10 +6,6 @@
     <script src="../bower_components/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="../bower_components/bootstrap-css/css/bootstrap.min.css">
     <style>
-      table input {
-        height: 50px !important;
-        font-size: 150%;
-        background: #ffffff !important }
       .btn-calc-11 {
         width: 100% !important;
         height: 50px !important;
@@ -27,6 +23,10 @@
         border: none !important }
       .fixed {
         table-layout: fixed }
+      #result {
+        height: 50px;
+        font-size: 150%;
+        background: #ffffff }
     </style>
   </head>
   <body>
@@ -37,7 +37,7 @@
         <table class="table borderless fixed">
           <tr>
             <td colspan="4">
-              <input type="text" readonly="readonly" class="form-control">
+              <input id="result" type="text" readonly="readonly" class="form-control">
             </td>
           </tr>
           <tr>

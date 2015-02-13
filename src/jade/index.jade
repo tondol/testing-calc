@@ -6,10 +6,6 @@ html(lang='ja')
     script(src='../bower_components/jquery/dist/jquery.min.js')
     link(rel='stylesheet', href='../bower_components/bootstrap-css/css/bootstrap.min.css')
     style.
-      table input {
-        height: 50px !important;
-        font-size: 150%;
-        background: #ffffff !important }
       .btn-calc-11 {
         width: 100% !important;
         height: 50px !important;
@@ -27,6 +23,10 @@ html(lang='ja')
         border: none !important }
       .fixed {
         table-layout: fixed }
+      #result {
+        height: 50px;
+        font-size: 150%;
+        background: #ffffff }
   body
     .container
       h1 testing-calc
@@ -35,7 +35,7 @@ html(lang='ja')
         table.table.borderless.fixed
           tr
             td(colspan='4')
-              input.form-control(type='text', readonly='readonly')
+              input#result.form-control(type='text', readonly='readonly')
           tr
             td
               button#btn-clear.btn.btn-danger.btn-calc-11 C
